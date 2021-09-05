@@ -1,0 +1,10 @@
+Web site(Main Page): http://qainterview.pythonanywhere.com/
+Stack: Java+Selenium+TestNG or Junit+maven
+Task:
+1. Use Page Object for web pages representation
+2. Validate default values of Main Page
+3. Add locators on page:
+- Main Page - all needed for validation and testing
+4. Write at least 5 positive and 5 negative test cases for Main Page
+5. Framework should have possibility to use Chrome and Firefox browser
+6. All tests should have possibility to start from command line using maven ("mvn" command)
