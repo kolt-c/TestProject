@@ -1,8 +1,14 @@
 import framework.TestListener;
+import framework.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+import org.testng.reporters.jq.Main;
+import pages.MainPage;
+
+import static framework.BasePage.initPage;
 
 @Listeners(TestListener.class)
 public class MyTest {
@@ -11,12 +17,7 @@ public class MyTest {
 
     @Test
     public void sampleTest(){
-        logger.info("Sample test started.");
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        logger.info("Sample test finished.");
+        MainPage mainPage = initPage(MainPage.class);
+        mainPage.assertVisibilityOfMainPageElements();
     }
 }
