@@ -1,10 +1,13 @@
 package pages;
 
 import framework.BasePage;
+import framework.Utils;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.testng.asserts.SoftAssert;
+
 import static framework.Utils.*;
+import static framework.WebDriverManager.getDriver;
 
 public class MainPage extends BasePage {
 
@@ -22,6 +25,9 @@ public class MainPage extends BasePage {
     WebElement copyrightText;
     @FindBy(xpath = QXF2_SERVICES_LINK)
     WebElement qxf2ServicesLink;
+    @FindBy(xpath = RESULT_TEXT)
+    WebElement resultText;
+
 
     public static final String GREATEST_FACTORIAL_TEXT = "//h1[@class='margin-base-vertical text-center']";
     public static final String NUMBER_INPUT = "number";
@@ -30,20 +36,46 @@ public class MainPage extends BasePage {
     public static final String PRIVACY_LINK = "//a[text() = 'Privacy']";
     public static final String COPYRIGHT_TEXT = "//p[@class='margin-base-vertical text-center wor_copyright' and contains(text(), '©')]";
     public static final String QXF2_SERVICES_LINK = "//a[text() = 'Qxf2 Services']";
+    public static final String RESULT_TEXT = "//p[@id='resultDiv']";
 
-public MainPage assertVisibilityOfMainPageElements(){
-    logger.info("Asserting visibility of main page elements.");
-    SoftAssert softAssert = new SoftAssert();
-    softAssert.assertTrue(isElementVisible(greatestFactorialText), "Greatest factorial text should be visible.");
-    softAssert.assertTrue(isElementVisible(numberInput), "Number input field should be visible.");
-    softAssert.assertTrue(isElementVisible(getFactorialButton), "Get factorial button should be visible.");
-    softAssert.assertTrue(isElementVisible(termsAndConditionsLink), "Terms and conditions link should be visible.");
-    softAssert.assertTrue(isElementVisible(privacyLink), "Privacy link should be visible.");
-    softAssert.assertTrue(isElementVisible(copyrightText), "Copyright text should be visible.");
-    softAssert.assertTrue(isElementVisible(qxf2ServicesLink), "Qxf2 services link should be visible.");
-    softAssert.assertAll();
+    public boolean isPageTitleCorrect() {
+        logger.info("Asserting main page title.");
+        return Utils.getPageTitleText().equals("Factoriall");
+    }
 
-    return this;
-}
+    public boolean isGreatestFactorialTextVisible() {
+        logger.info("Asserting Greatest factorial text visibility.");
+        return isElementVisible(greatestFactorialText);
+    }
+
+    public boolean isNumberInputVisible() {
+        logger.info("Asserting number input field visibility.");
+        return isElementVisible(numberInput);
+    }
+
+    public boolean isGetFactorialButtonVisible() {
+        logger.info("Asserting get factorial button visibility.");
+        return isElementVisible(getFactorialButton);
+    }
+
+    public boolean isTermsAndConditionsLinkVisible() {
+        logger.info("Asserting terms and conditions link visibility.");
+        return isElementVisible(termsAndConditionsLink);
+    }
+
+    public boolean isPrivacyLinkLinkVisible() {
+        logger.info("Asserting Privacy link visibility.");
+        return isElementVisible(privacyLink);
+    }
+
+    public boolean isCopyrightTextVisible() {
+        logger.info("Asserting copyright text visibility.");
+        return isElementVisible(copyrightText);
+    }
+
+    public boolean isQxf2ServicesLinkVisible() {
+        logger.info("Asserting Qxf2 services link visibility.");
+        return isElementVisible(qxf2ServicesLink);
+    }
 
 }
