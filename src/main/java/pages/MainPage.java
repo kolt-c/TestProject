@@ -73,6 +73,15 @@ public class MainPage extends BasePage {
         return isElementVisible(qxf2ServicesLink);
     }
 
+    public boolean isResultVisible() {
+        logger.info("Asserting result visibility.");
+        return isElementVisible(qxf2ServicesLink);
+    }
+
+    public String getResultText() {
+        return resultText.getText();
+    }
+
     public String getPageTitleText() {
         return Utils.getPageTitleText();
     }
@@ -115,6 +124,18 @@ public class MainPage extends BasePage {
 
     public void clickOnQxf2ServicesLink(){
         qxf2ServicesLink.click();
+    }
+
+    public MainPage typeValueToNumberInput(String value){
+        logger.info("Typing to number input value: " + value);
+        numberInput.clear();
+        numberInput.sendKeys(value);
+        return this;
+    }
+    public void clickCalculateButtonAndWaitForAjax(){
+        logger.info("Clicking calculate button.");
+        getFactorialButton.click();
+        Utils.waitForAjaxRequestToBeFinished();
     }
 
 }

@@ -73,4 +73,36 @@ public class MainPageTest {
 
         softAssert.assertAll();
     }
-}
+
+    //in this calc valid positive numbers: 0 - 989
+    @Test(groups = {"tests", "calculation"})
+    public void checkFactorialCalculationWithValidValues() {
+        MainPage mainPage = initPage(MainPage.class);
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 0), "Correct result should be shown.");
+        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 1), "Correct result should be shown.");
+        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 10), "Correct result should be shown.");
+        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 171), "Correct result should be shown.");
+        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 1710), "Correct result should be shown.");
+
+        softAssert.assertAll();
+    }
+
+    public boolean isFactorialCalculationWithValueCorrect(MainPage mainPage, int value){
+        String expectedResultText = "";
+        logger.info("Verifying calculator with: " + value);
+
+        mainPage.typeValueToNumberInput(String.valueOf(value)).clickCalculateButtonAndWaitForAjax();
+        if (!mainPage.isResultVisible())
+            return false;
+
+        if(value >=0 & value < 22)
+            expectedResultText = "The factorial of " + value + " is: " + String.valueOf(Utils.factorial(value));
+        else if(value > 170)
+            expectedResultText = "The factorial of " + value + " is: Infinity";
+
+        System.out.println(expectedResultText);
+        System.out.println(mainPage.getResultText());
+        return mainPage.getResultText().equals(expectedResultText);
+    }
+    }

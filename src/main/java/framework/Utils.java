@@ -71,4 +71,14 @@ public class Utils {
     public static String getBaseURL(){
         return new ConfigProvider().getBaseUrl();
     }
+
+    public static long factorial(int number) {
+        long result = 1;
+
+        for (int factor = 2; factor <= number; factor++) {
+            result *= factor;
+        }
+
+        return result;
+    }
 }
