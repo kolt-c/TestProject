@@ -21,7 +21,12 @@ public class ConfigProvider {
     public ConfigProvider() {
         properties = loadPropertiesFile();
         baseUrl = getProperty(SELENIUM_BASEURL);
-        browser = BrowserType.Browser(getProperty(SELENIUM_BROWSER));
+
+        try {
+            browser = BrowserType.Browser(java.lang.System.getProperties().getProperty("browser"));
+        }catch (Exception e) {
+            browser = BrowserType.Browser(getProperty(SELENIUM_BROWSER));
+        }
     }
 
     private String getProperty(String name) {
