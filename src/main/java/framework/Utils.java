@@ -37,6 +37,13 @@ public class Utils {
         return WebDriverManager.getDriver().getCurrentUrl();
     }
 
+    public static void navigateToURL(String url){
+        String oldUrl = Utils.getCurrentUrl();
+        logger.info("Navigate to: " + url);
+        WebDriverManager.getDriver().get(url);
+        Utils.waitForUrlToBeChanged(oldUrl, 5);
+    }
+
     public static void waitForAjaxRequestToBeFinished() {
         int sleepTime = 5000;
         JavascriptExecutor jse = (JavascriptExecutor) WebDriverManager.getDriver();

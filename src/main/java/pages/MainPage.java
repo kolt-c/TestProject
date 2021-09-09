@@ -4,10 +4,10 @@ import framework.BasePage;
 import framework.Utils;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.testng.asserts.SoftAssert;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static framework.Utils.*;
-import static framework.WebDriverManager.getDriver;
 
 public class MainPage extends BasePage {
 
@@ -37,11 +37,6 @@ public class MainPage extends BasePage {
     public static final String COPYRIGHT_TEXT = "//p[@class='margin-base-vertical text-center wor_copyright' and contains(text(), '©')]";
     public static final String QXF2_SERVICES_LINK = "//a[text() = 'Qxf2 Services']";
     public static final String RESULT_TEXT = "//p[@id='resultDiv']";
-
-    public boolean isPageTitleCorrect() {
-        logger.info("Asserting main page title.");
-        return Utils.getPageTitleText().equals("Factoriall");
-    }
 
     public boolean isGreatestFactorialTextVisible() {
         logger.info("Asserting Greatest factorial text visibility.");
@@ -76,6 +71,50 @@ public class MainPage extends BasePage {
     public boolean isQxf2ServicesLinkVisible() {
         logger.info("Asserting Qxf2 services link visibility.");
         return isElementVisible(qxf2ServicesLink);
+    }
+
+    public String getPageTitleText() {
+        return Utils.getPageTitleText();
+    }
+
+    public String getGreatestFactorialText() {
+        return greatestFactorialText.getText();
+    }
+
+    public String getGreatestFactorialColor() {
+        return greatestFactorialText.getCssValue("color");
+    }
+
+    public String getNumberInputPlaceholderText() {
+        return numberInput.getAttribute("placeholder");
+    }
+
+    public String getGetFactorialButtonText() {
+        return getFactorialButton.getText();
+    }
+
+    public String getGetFactorialButtonTextColor() {
+        return getFactorialButton.getCssValue("color");
+    }
+
+    public String getGetFactorialButtonBackgroundColor() {
+        return getFactorialButton.getCssValue("background-color");
+    }
+
+    public boolean isCopyrightTextCorrect() {
+        return copyrightText.getText().equals("© Qxf2 Services 2021 - " + new SimpleDateFormat("yyyy").format(new Date()));
+    }
+
+    public void clickOnTermsAndConditionsLink(){
+        termsAndConditionsLink.click();
+    }
+
+    public void clickOnPrivacyLink(){
+        privacyLink.click();
+    }
+
+    public void clickOnQxf2ServicesLink(){
+        qxf2ServicesLink.click();
     }
 
 }
