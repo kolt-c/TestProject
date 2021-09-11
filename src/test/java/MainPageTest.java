@@ -16,7 +16,7 @@ public class MainPageTest {
     private Logger logger = LoggerFactory.getLogger(MainPageTest.class);
 
     @Test(groups = {"tests", "basic"})
-    public void checkBasicMainPageElements(){
+    public void checkBasicMainPageElements() {
         MainPage mainPage = initPage(MainPage.class);
         assertEquals(Utils.getCurrentUrl(), Utils.getBaseURL());
         assertVisibilityOfBasicMainPageElements(mainPage);
@@ -24,7 +24,7 @@ public class MainPageTest {
         verifyLinksOnMainPage(mainPage);
     }
 
-    public void assertVisibilityOfBasicMainPageElements(MainPage mainPage){
+    public void assertVisibilityOfBasicMainPageElements(MainPage mainPage) {
         logger.info("Asserting visibility of basic main page elements.");
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertTrue(mainPage.isGreatestFactorialTextVisible(), "Greatest factorial text should be visible.");
@@ -40,30 +40,30 @@ public class MainPageTest {
     public void validateDefaultValuesOfBasicMainPageElements(MainPage mainPage) {
         logger.info("Validating default values of basic main page elements.");
         SoftAssert softAssert = new SoftAssert();
-        softAssert.assertEquals(mainPage.getPageTitleText(), "Factoriall", "Page title should be correct.");
+        softAssert.assertEquals(mainPage.getPageTitleText(), "Factorial", "Page title should be correct.");
         softAssert.assertEquals(mainPage.getGreatestFactorialText(), "The greatest factorial calculator!", "Text should be correct.");
         softAssert.assertEquals(mainPage.getGreatestFactorialColor(), "rgba(92, 184, 92, 1)", "Greatest factorial text color should be correct.");
         softAssert.assertEquals(mainPage.getNumberInputPlaceholderText(), "Enter an integer", "Number input placeholder text color should be correct.");
-        softAssert.assertEquals(mainPage.getGetFactorialButtonText(),"Calculate!", "Get factorial button text should be equal.");
+        softAssert.assertEquals(mainPage.getGetFactorialButtonText(), "Calculate!", "Get factorial button text should be equal.");
         softAssert.assertEquals(mainPage.getGetFactorialButtonTextColor(), "rgba(255, 255, 255, 1)", "Get factorial button text color should be equal.");
         softAssert.assertEquals(mainPage.getGetFactorialButtonBackgroundColor(), "rgba(92, 184, 92, 1)", "Get factorial button color should be equal.");
         softAssert.assertTrue(mainPage.isCopyrightTextCorrect(), "Copyright text should be correct.");
         softAssert.assertAll();
     }
 
-    public void verifyLinksOnMainPage(MainPage mainPage){
+    public void verifyLinksOnMainPage(MainPage mainPage) {
         logger.info("Verifying links on main page.");
         String startUrl = Utils.getCurrentUrl();
         SoftAssert softAssert = new SoftAssert();
 
         mainPage.clickOnTermsAndConditionsLink();
         Utils.waitForUrlToBeChanged(startUrl, 5);
-        softAssert.assertEquals(Utils.getCurrentUrl(), "http://qainterview.pythonanywhere.com/privacy", "Terms and conditions link should be correct. ");
+        softAssert.assertEquals(Utils.getCurrentUrl(), "http://qainterview.pythonanywhere.com/terms", "Terms and conditions link should be correct. ");
         Utils.navigateToURL(startUrl);
 
         mainPage.clickOnPrivacyLink();
         Utils.waitForUrlToBeChanged(startUrl, 5);
-        softAssert.assertEquals(Utils.getCurrentUrl(), "http://qainterview.pythonanywhere.com/terms", "Privacy link should be correct. ");
+        softAssert.assertEquals(Utils.getCurrentUrl(), "http://qainterview.pythonanywhere.com/privacy", "Privacy link should be correct. ");
         Utils.navigateToURL(startUrl);
 
         mainPage.clickOnQxf2ServicesLink();
@@ -77,18 +77,16 @@ public class MainPageTest {
     //in this calc valid positive numbers: 0 - 989
     @Test(groups = {"tests", "calculation"})
     public void checkFactorialCalculationWithValidValues() {
+        int[] values = new int[]{0, 1, 21, 22, 169, 170, 180};
         MainPage mainPage = initPage(MainPage.class);
         SoftAssert softAssert = new SoftAssert();
-        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 0), "Correct result should be shown.");
-        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 1), "Correct result should be shown.");
-        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 10), "Correct result should be shown.");
-        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 171), "Correct result should be shown.");
-        softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, 1710), "Correct result should be shown.");
-
+        for (int value : values) {
+            softAssert.assertTrue(isFactorialCalculationWithValueCorrect(mainPage, value), "Correct result should be shown.");
+        }
         softAssert.assertAll();
     }
 
-    public boolean isFactorialCalculationWithValueCorrect(MainPage mainPage, int value){
+    public boolean isFactorialCalculationWithValueCorrect(MainPage mainPage, int value) {
         String expectedResultText = "";
         logger.info("Verifying calculator with: " + value);
 
@@ -96,13 +94,12 @@ public class MainPageTest {
         if (!mainPage.isResultVisible())
             return false;
 
-        if(value >=0 & value < 22)
-            expectedResultText = "The factorial of " + value + " is: " + String.valueOf(Utils.factorial(value));
-        else if(value > 170)
+        if (value >= 0 & value < 22)
+            expectedResultText = "The factorial of " + value + " is: " + Utils.getFactorialLong(value);
+        if (value >= 22 & value < 170)
+            expectedResultText = "The factorial of " + value + " is: " + Utils.getFactorialWithBigInteger(value);
+        else if (value >= 170)
             expectedResultText = "The factorial of " + value + " is: Infinity";
-
-        System.out.println(expectedResultText);
-        System.out.println(mainPage.getResultText());
         return mainPage.getResultText().equals(expectedResultText);
     }
-    }
+}

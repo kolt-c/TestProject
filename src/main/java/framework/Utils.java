@@ -1,10 +1,18 @@
 package framework;
 
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import static framework.BasePage.logger;
 import static framework.WebDriverManager.getDriver;
@@ -72,7 +80,7 @@ public class Utils {
         return new ConfigProvider().getBaseUrl();
     }
 
-    public static long factorial(int number) {
+    public static long getFactorialLong(int number) {
         long result = 1;
 
         for (int factor = 2; factor <= number; factor++) {
@@ -80,5 +88,23 @@ public class Utils {
         }
 
         return result;
+    }
+
+    public static String getFactorialWithBigInteger(int number) {
+        BigInteger n = BigInteger.valueOf(number);
+        BigInteger result = BigInteger.ONE;
+
+        while (!n.equals(BigInteger.ZERO)) {
+            result = result.multiply(n);
+            n = n.subtract(BigInteger.ONE);
+        }
+
+        NumberFormat formatter;
+        if (number < 70)
+            formatter = new DecimalFormat("0.0000000000000000E0", DecimalFormatSymbols.getInstance(Locale.ROOT));
+        else
+            formatter = new DecimalFormat("0.000000000000000E0", DecimalFormatSymbols.getInstance(Locale.ROOT));
+
+        return formatter.format(new BigDecimal(result)).replace("E","e+");
     }
 }
