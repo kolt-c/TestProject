@@ -1,12 +1,10 @@
 package framework;
 
-import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -18,10 +16,6 @@ import static framework.BasePage.logger;
 import static framework.WebDriverManager.getDriver;
 
 public class Utils {
-    public static void waitForElementPresent(WebElement webElement) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), 2);
-        WebElement element = wait.until(ExpectedConditions.visibilityOf(webElement));
-    }
 
     public static boolean isElementVisible(WebElement webElement){
         long timeLimitInSeconds = 2;
@@ -80,16 +74,6 @@ public class Utils {
         return new ConfigProvider().getBaseUrl();
     }
 
-    public static long getFactorialLong(int number) {
-        long result = 1;
-
-        for (int factor = 2; factor <= number; factor++) {
-            result *= factor;
-        }
-
-        return result;
-    }
-
     public static String getFactorialWithBigInteger(int number) {
         BigInteger n = BigInteger.valueOf(number);
         BigInteger result = BigInteger.ONE;
@@ -100,11 +84,31 @@ public class Utils {
         }
 
         NumberFormat formatter;
-        if (number < 70)
+        if (number < 22)
+            formatter = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ROOT));
+        else if (number < 70)
             formatter = new DecimalFormat("0.0000000000000000E0", DecimalFormatSymbols.getInstance(Locale.ROOT));
         else
             formatter = new DecimalFormat("0.000000000000000E0", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
         return formatter.format(new BigDecimal(result)).replace("E","e+");
+    }
+
+    public static int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public static String getExpectedResultText(int value) {
+        String expectedResultText = "";
+        logger.info("Getting expected result text for: " + value);
+
+        if (value >= 0 & value < 22)
+            expectedResultText = "The factorial of " + value + " is: " + Utils.getFactorialWithBigInteger(value);
+        if (value >= 22 & value < 171)
+            expectedResultText = "The factorial of " + value + " is: " + Utils.getFactorialWithBigInteger(value);
+        else if (value >= 171)
+            expectedResultText = "The factorial of " + value + " is: Infinity";
+
+        return expectedResultText;
     }
 }

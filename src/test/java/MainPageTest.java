@@ -1,31 +1,28 @@
 import framework.TestListener;
 import framework.Utils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.MainPage;
+import java.util.Random;
 
 import static framework.BasePage.initPage;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @Listeners(TestListener.class)
 public class MainPageTest {
 
     private Logger logger = LoggerFactory.getLogger(MainPageTest.class);
 
-    @Test(groups = {"tests", "basic"})
-    public void checkBasicMainPageElements() {
+    @Test(groups = {"tests", "positive"})
+    public void checkVisibilityOfBasicMainPageElements() {
+        logger.info("Checking visibility of basic main page elements.");
         MainPage mainPage = initPage(MainPage.class);
         assertEquals(Utils.getCurrentUrl(), Utils.getBaseURL());
-        assertVisibilityOfBasicMainPageElements(mainPage);
-        validateDefaultValuesOfBasicMainPageElements(mainPage);
-        verifyLinksOnMainPage(mainPage);
-    }
-
-    public void assertVisibilityOfBasicMainPageElements(MainPage mainPage) {
-        logger.info("Asserting visibility of basic main page elements.");
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertTrue(mainPage.isGreatestFactorialTextVisible(), "Greatest factorial text should be visible.");
         softAssert.assertTrue(mainPage.isNumberInputVisible(), "Number input field should be visible.");
@@ -37,8 +34,11 @@ public class MainPageTest {
         softAssert.assertAll();
     }
 
-    public void validateDefaultValuesOfBasicMainPageElements(MainPage mainPage) {
+    @Test(groups = {"tests", "positive"})
+    public void checkDefaultValuesOfBasicMainPageElements() {
         logger.info("Validating default values of basic main page elements.");
+        MainPage mainPage = initPage(MainPage.class);
+        assertEquals(Utils.getCurrentUrl(), Utils.getBaseURL());
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertEquals(mainPage.getPageTitleText(), "Factorial", "Page title should be correct.");
         softAssert.assertEquals(mainPage.getGreatestFactorialText(), "The greatest factorial calculator!", "Text should be correct.");
@@ -51,8 +51,11 @@ public class MainPageTest {
         softAssert.assertAll();
     }
 
-    public void verifyLinksOnMainPage(MainPage mainPage) {
+    @Test(groups = {"tests", "positive"})
+    public void verifyLinksOnMainPage() {
         logger.info("Verifying links on main page.");
+        MainPage mainPage = initPage(MainPage.class);
+        assertEquals(Utils.getCurrentUrl(), Utils.getBaseURL());
         String startUrl = Utils.getCurrentUrl();
         SoftAssert softAssert = new SoftAssert();
 
@@ -74,10 +77,9 @@ public class MainPageTest {
         softAssert.assertAll();
     }
 
-    //in this calc valid positive numbers: 0 - 989
-    @Test(groups = {"tests", "calculation"})
+    @Test(groups = {"tests", "positive"})
     public void checkFactorialCalculationWithValidValues() {
-        int[] values = new int[]{0, 1, 21, 22, 169, 170, 180};
+        int[] values = new int[]{0, 1, 21, 22, 170, 171, Utils.getRandomNumber(172,900)};
         MainPage mainPage = initPage(MainPage.class);
         SoftAssert softAssert = new SoftAssert();
         for (int value : values) {
@@ -87,19 +89,66 @@ public class MainPageTest {
     }
 
     public boolean isFactorialCalculationWithValueCorrect(MainPage mainPage, int value) {
-        String expectedResultText = "";
-        logger.info("Verifying calculator with: " + value);
+        logger.info("Verifying factorial calculator with: " + value);
 
         mainPage.typeValueToNumberInput(String.valueOf(value)).clickCalculateButtonAndWaitForAjax();
         if (!mainPage.isResultVisible())
             return false;
 
-        if (value >= 0 & value < 22)
-            expectedResultText = "The factorial of " + value + " is: " + Utils.getFactorialLong(value);
-        if (value >= 22 & value < 170)
-            expectedResultText = "The factorial of " + value + " is: " + Utils.getFactorialWithBigInteger(value);
-        else if (value >= 170)
-            expectedResultText = "The factorial of " + value + " is: Infinity";
-        return mainPage.getResultText().equals(expectedResultText);
+        return mainPage.getResultText().equals(Utils.getExpectedResultText(value));
+    }
+
+    @Test(groups = {"tests", "negative"})
+    public void checkFactorialCalculationWithNegativeInteger() {
+        logger.info("Checking factorial calculation with negative integer.");
+        MainPage mainPage = initPage(MainPage.class);
+
+        mainPage.typeValueToNumberInput(String.valueOf(Utils.getRandomNumber(-20,-1))).clickCalculateButtonAndWaitForAjax();
+        assertTrue(mainPage.isResultVisible() & mainPage.getResultText().equals("Please enter an integer"), "Error message should be shown.");
+    }
+
+    @Test(groups = {"tests", "negative"})
+    public void checkFactorialCalculationWithNonIntegerNumber() {
+        logger.info("Checking factorial calculation with negative integer.");
+        MainPage mainPage = initPage(MainPage.class);
+
+        mainPage.typeValueToNumberInput(String.valueOf(new Random().nextDouble())).clickCalculateButtonAndWaitForAjax();
+        assertTrue(mainPage.isResultVisible() & mainPage.getResultText().equals("Please enter an integer"), "Error message should be shown.");
+    }
+
+    @Test(groups = {"tests", "negative"})
+    public void checkFactorialCalculationWithNonNumber() {
+        logger.info("Checking factorial calculation with non-number.");
+        MainPage mainPage = initPage(MainPage.class);
+
+        mainPage.typeValueToNumberInput(RandomStringUtils.randomAlphanumeric(8)).clickCalculateButtonAndWaitForAjax();
+        assertTrue(mainPage.isResultVisible() & mainPage.getResultText().equals("Please enter an integer"), "Error message should be shown.");
+    }
+
+    @Test(groups = {"tests", "negative"})
+    public void checkFactorialCalculationWithEmptyValue() {
+        logger.info("Checking factorial calculation with empty value.");
+        MainPage mainPage = initPage(MainPage.class);
+
+        mainPage.clickCalculateButtonAndWaitForAjax();
+        assertTrue(mainPage.isResultVisible() & mainPage.getResultText().equals("Please enter an integer"), "Error message should be shown.");
+    }
+
+    @Test(groups = {"tests", "negative"})
+    public void checkFactorialCalculationWithAddingSpaceBeforeValidInteger() {
+        logger.info("Checking factorial calculation with adding space before valid value.");
+        MainPage mainPage = initPage(MainPage.class);
+        int value = Utils.getRandomNumber(0,22);
+        mainPage.typeValueToNumberInput(" " + value).clickCalculateButtonAndWaitForAjax();
+        assertEquals(mainPage.getResultText(), Utils.getExpectedResultText(value), "Correct result should be shown.");
+    }
+
+    @Test(groups = {"tests", "negative"})
+    public void checkFactorialCalculationWithAddingSpaceAfterValidInteger() {
+        logger.info("Checking factorial calculation with adding space after valid value.");
+        MainPage mainPage = initPage(MainPage.class);
+        int value = Utils.getRandomNumber(0,22);
+        mainPage.typeValueToNumberInput(value + " ").clickCalculateButtonAndWaitForAjax();
+        assertEquals(mainPage.getResultText(), Utils.getExpectedResultText(value), "Correct result should be shown.");
     }
 }

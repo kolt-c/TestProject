@@ -75,7 +75,7 @@ public class MainPage extends BasePage {
 
     public boolean isResultVisible() {
         logger.info("Asserting result visibility.");
-        return isElementVisible(qxf2ServicesLink);
+        return isElementVisible(resultText);
     }
 
     public String getResultText() {
